@@ -3,19 +3,22 @@ const jwt = require ('jsonwebtoken');
 
 require('dotenv').config();
 
+function generateClientId(secret) {
+    return crypto.createHash('sha256').update(secret).digest('hex');
+}
+
 function startClientCheckIn(request, result)
 {
     const { secretKey } = request.body;
 
-    if (!secretKey) {
-        return response.status(400).json({ error: 'Secret key is required' });
-    }
-
-    if (secretKey !== process.env.CLIENT_SECRET_KEY) {
+    if (!secretKey || secretKey !== process.env.CLIENT_SECRET_KEY) {
         return response.status(401).json({ error: 'Unauthorized client, access denied.' });
     }
 
+    const clientId = generateClientId(secretKey);
+
     const token = jwt.sign({ clientId }, process.env.CLIENT_JWT_SIGN, { expiresIn: '1h' });
+
     response.json({ token });
 }
 
