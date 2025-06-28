@@ -3,30 +3,26 @@ const jwt = require ('jsonwebtoken');
 
 require('dotenv').config();
 
-function startClientCheckIn(request, result)
-{
-    const clientSecretKey = request.body;
+function startClientCheckIn(request, result) {
+    // Ожидаем, что тело запроса — JSON вида { secretKey: "test_unity_unigram" }
+    const { secretKey } = request.body;
 
-    if (clientSecretKey === process.env.CLIENT_SECRET_KEY)
-    {
-        const token = jwt.sign(
-        {
-            clientId: 'unity-client'
-        },
-        process.env.CLIENT_JWT_SIGN,
-        {
-            expiresIn: '24h'
-        });
-
-        result.status(200).json({ token });
-    }
-    else
-    {
-        result.status(401).json(
-        {
+    // Проверяем, есть ли ключ и совпадает ли он с .env
+    if (!secretKey || secretKey !== process.env.CLIENT_SECRET_KEY) {
+        return result.status(401).json({
             error: 'Unauthorized client, access denied.'
         });
     }
+
+    // Генерируем JWT токен
+    const token = jwt.sign(
+        { clientId: 'unity-client' },
+        process.env.CLIENT_JWT_SIGN,
+        { expiresIn: '24h' }
+    );
+
+    // Отправляем токен клиенту
+    result.status(200).json({ token });
 }
 
 function authenticateClient(request, result, next)
