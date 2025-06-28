@@ -6,7 +6,7 @@ const express = require('express');
 const router = express.Router();
 
 router.post('/authenticate', 
-    bodyParser.text(), (request, result) => 
+    bodyParser.json(), (request, result) => 
 {
     sessionValidation.startClientCheckIn(request, result);
 });
