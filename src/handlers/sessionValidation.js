@@ -5,7 +5,35 @@ require('dotenv').config();
 
 function startClientCheckIn(request, result)
 {
-    const clientSecretKey = request.body;
+    // const clientSecretKey = request.body;
+
+    // const received = request.body.trim();
+    // const expected = process.env.CLIENT_SECRET_KEY;
+
+    // console.log('Получено:', `'${received}'`);
+    // console.log('Ожидалось:', `'${expected}'`);
+    // console.log('Совпадают?', received === expected);
+
+    // if (clientSecretKey === process.env.CLIENT_SECRET_KEY)
+    // {
+    //     const token = jwt.sign(
+    //     {
+    //         clientId: 'unity-client'
+    //     },
+    //     process.env.CLIENT_JWT_SIGN,
+    //     {
+    //         expiresIn: '24h'
+    //     });
+
+    //     result.status(200).json({ token });
+    // }
+    // else
+    // {
+    //     result.status(401).json(
+    //     {
+    //         error: 'Unauthorized client, access denied.'
+    //     });
+    // }
 
     const received = request.body.trim();
     const expected = process.env.CLIENT_SECRET_KEY;
@@ -14,26 +42,28 @@ function startClientCheckIn(request, result)
     console.log('Ожидалось:', `'${expected}'`);
     console.log('Совпадают?', received === expected);
 
-    if (clientSecretKey === process.env.CLIENT_SECRET_KEY)
-    {
-        const token = jwt.sign(
-        {
-            clientId: 'unity-client'
-        },
-        process.env.CLIENT_JWT_SIGN,
-        {
-            expiresIn: '24h'
-        });
+    if (received === expected) {
+        try {
+            const token = jwt.sign(
+                { clientId: 'unity-client' },
+                process.env.CLIENT_JWT_SIGN,
+                { expiresIn: '24h' }
+            );
 
-        result.status(200).json({ token });
+            console.log('JWT Сгенерирован:', token);
+            return result.status(200).json({ token });
+
+        } catch (err) {
+            console.error('Ошибка генерации JWT:', err);
+            return result.status(500).json({
+                error: 'Internal Server Error',
+                details: err.message
+            });
+        }
     }
-    else
-    {
-        result.status(401).json(
-        {
-            error: 'Unauthorized client, access denied.'
-        });
-    }
+
+    console.warn('Ключ не совпадает');
+    return result.status(401).json({ error: 'Unauthorized client, access denied.' });
 }
 
 function authenticateClient(request, result, next)
