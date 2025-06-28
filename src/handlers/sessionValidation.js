@@ -7,6 +7,10 @@ function startClientCheckIn(request, result)
 {
     const clientSecretKey = request.body;
 
+    console.log('Получено:', `'${received}'`);
+    console.log('Ожидалось:', `'${expected}'`);
+    console.log('Совпадают?', received === expected);
+
     if (clientSecretKey === process.env.CLIENT_SECRET_KEY)
     {
         const token = jwt.sign(
