@@ -3,23 +3,30 @@ const jwt = require ('jsonwebtoken');
 
 require('dotenv').config();
 
-function generateClientId(secret) {
-    return crypto.createHash('sha256').update(secret).digest('hex');
-}
-
 function startClientCheckIn(request, result)
 {
-    const { secretKey } = request.body;
+    const clientSecretKey = request.body;
 
-    if (!secretKey || secretKey !== process.env.CLIENT_SECRET_KEY) {
-        return response.status(401).json({ error: 'Unauthorized client, access denied.' });
+    if (clientSecretKey === process.env.CLIENT_SECRET_KEY)
+    {
+        const token = jwt.sign(
+        {
+            clientId: 'unity-client'
+        },
+        process.env.CLIENT_JWT_SIGN,
+        {
+            expiresIn: '24h'
+        });
+
+        result.status(200).json({ token });
     }
-
-    const clientId = generateClientId(secretKey);
-
-    const token = jwt.sign({ clientId }, process.env.CLIENT_JWT_SIGN, { expiresIn: '1h' });
-
-    response.json({ token });
+    else
+    {
+        result.status(401).json(
+        {
+            error: 'Unauthorized client, access denied.'
+        });
+    }
 }
 
 function authenticateClient(request, result, next)
