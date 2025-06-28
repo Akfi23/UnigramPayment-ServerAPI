@@ -1,13 +1,10 @@
 const sessionValidation = require('../handlers/sessionValidation');
-
-const bodyParser = require('body-parser');
-
 const express = require('express');
 const router = express.Router();
 
-router.post('/authenticate', 
-    bodyParser.text(), (request, result) => 
-{
+router.use(express.json());
+
+router.post('/authenticate', (request, result) => {
     sessionValidation.startClientCheckIn(request, result);
 });
 
