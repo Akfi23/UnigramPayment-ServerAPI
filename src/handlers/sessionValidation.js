@@ -5,36 +5,6 @@ require('dotenv').config();
 
 function startClientCheckIn(request, result)
 {
-    // const clientSecretKey = request.body;
-
-    // const received = request.body.trim();
-    // const expected = process.env.CLIENT_SECRET_KEY;
-
-    // console.log('Получено:', `'${received}'`);
-    // console.log('Ожидалось:', `'${expected}'`);
-    // console.log('Совпадают?', received === expected);
-
-    // if (clientSecretKey === process.env.CLIENT_SECRET_KEY)
-    // {
-    //     const token = jwt.sign(
-    //     {
-    //         clientId: 'unity-client'
-    //     },
-    //     process.env.CLIENT_JWT_SIGN,
-    //     {
-    //         expiresIn: '24h'
-    //     });
-
-    //     result.status(200).json({ token });
-    // }
-    // else
-    // {
-    //     result.status(401).json(
-    //     {
-    //         error: 'Unauthorized client, access denied.'
-    //     });
-    // }
-
     const received = request.body.trim();
     const expected = process.env.CLIENT_SECRET_KEY;
 
