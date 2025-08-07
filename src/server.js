@@ -24,9 +24,9 @@ app.use((req, res, next) => {
     next();
 });
 
-//app.use(bodyParser.json());
-//app.use(bodyParser.text());
-app.use(express.json());
+
+//app.use(express.json());
+app.use(bodyParser.json());
 app.use(bodyParser.text());
 
 app.use('/api', generalRoutes);
