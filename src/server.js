@@ -24,17 +24,9 @@ app.use((req, res, next) => {
     next();
 });
 
-import cors from "cors";
-
-app.use(cors({
-    origin: "*", // можешь потом заменить на твой домен
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
-app.use(express.json());
-// app.use(bodyParser.json());
-// app.use(bodyParser.text());
+//app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.text());
 
 app.use('/api', generalRoutes);
 app.use('/api', authRoutes);
